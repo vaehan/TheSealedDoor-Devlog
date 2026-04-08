@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Log #1 — Vaehan's Fantasy Idle RPG</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0d0f14;
+    --bg2:       #13161e;
+    --bg3:       #1a1e29;
+    --border:    #2a2f42;
+    --gold:      #c9a84c;
+    --gold-dim:  #8a6e2f;
+    --gold-glow: #f0c96a;
+    --text:      #d4cfc4;
+    --text-dim:  #7a7568;
+    --accent:    #5b7fa6;
+    --accent2:   #7a5b9e;
+    --red:       #9e3a3a;
+    --green:     #3a7a5b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* ── Stars background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 34% 7%,  rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 58% 23%, rgba(255,255,255,0.3)  0%, transparent 100%),
+      radial-gradient(1px 1px at 77% 11%, rgba(255,255,255,0.2)  0%, transparent 100%),
+      radial-gradient(1px 1px at 91% 38%, rgba(255,255,255,0.28) 0%, transparent 100%),
+      radial-gradient(1px 1px at 6%  55%, rgba(255,255,255,0.18) 0%, transparent 100%),
+      radial-gradient(1px 1px at 83% 62%, rgba(255,255,255,0.22) 0%, transparent 100%),
+      radial-gradient(1px 1px at 47% 79%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 88%, rgba(255,255,255,0.2)  0%, transparent 100%),
+      radial-gradient(1px 1px at 66% 91%, rgba(255,255,255,0.18) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Page wrapper ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 60px 32px 100px;
+  }
+
+  /* ── Header / masthead ── */
+  .masthead {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .masthead-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 16px;
+  }
+
+  .masthead-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 4vw, 34px);
+    font-weight: 700;
+    color: var(--gold-glow);
+    text-shadow: 0 0 32px rgba(201,168,76,0.35), 0 0 8px rgba(201,168,76,0.2);
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .masthead-sub {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(13px, 2vw, 16px);
+    font-weight: 400;
+    color: var(--gold-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .masthead-divider {
+    margin: 24px auto 0;
+    width: 160px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+
+  /* ── Meta bar ── */
+  .meta-bar {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 48px;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+
+  .meta-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 2px;
+    background: var(--bg2);
+  }
+
+  .meta-tag.gold { color: var(--gold-dim); border-color: var(--gold-dim); }
+
+  /* ── Article body ── */
+  .article {
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .article p {
+    margin-bottom: 1.5em;
+    color: var(--text);
+  }
+
+  .article p:first-child::first-letter {
+    font-family: 'Cinzel', serif;
+    font-size: 3.2em;
+    font-weight: 700;
+    color: var(--gold);
+    float: left;
+    line-height: 0.85;
+    margin: 4px 10px 0 0;
+    text-shadow: 0 0 20px rgba(201,168,76,0.4);
+  }
+
+  /* ── Section headings ── */
+  .section-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 48px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ── Class cards ── */
+  .class-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 24px 0 32px;
+  }
+
+  @media (max-width: 560px) { .class-grid { grid-template-columns: 1fr; } }
+
+  .class-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .class-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+  }
+
+  .class-card.warrior::before { background: #9e4a3a; }
+  .class-card.priest::before  { background: #c9a84c; }
+  .class-card.mage::before    { background: #5b4a9e; }
+  .class-card.thief::before   { background: #3a7a5b; }
+
+  .class-card:hover {
+    border-color: var(--gold-dim);
+    transform: translateY(-2px);
+  }
+
+  .class-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--gold-glow);
+    margin-bottom: 6px;
+  }
+
+  .class-desc {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-dim);
+  }
+
+  .class-trait {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Pull quote ── */
+  .pull-quote {
+    margin: 36px 0;
+    padding: 24px 28px;
+    border-left: 3px solid var(--gold-dim);
+    background: var(--bg2);
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gold-glow);
+    line-height: 1.6;
+  }
+
+  /* ── Callout box ── */
+  .callout {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin: 28px 0;
+  }
+
+  .callout-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 8px;
+  }
+
+  .callout p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+
+  /* ── Sign-off ── */
+  .sign-off {
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .sign-off-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .sign-off-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+  }
+
+  .sign-off-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-top: 3px;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Inline highlight ── */
+  em.highlight {
+    font-style: normal;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.95em;
+  }
+
+  strong { color: var(--gold-glow); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="masthead-eyebrow">Dev Log · Issue 001</div>
+    <div class="masthead-title">So I'm Making an Idle RPG</div>
+    <div class="masthead-sub">Vaehan's Fantasy Idle RPG — Design Journal</div>
+    <div class="masthead-divider"></div>
+  </div>
+
+  <!-- Meta bar -->
+  <div class="meta-bar">
+    <span class="meta-tag gold">March 2026</span>
+    <span class="meta-tag">Godot 4</span>
+    <span class="meta-tag">Design Phase</span>
+    <span class="meta-tag">Solo Dev</span>
+  </div>
+
+  <!-- Article -->
+  <div class="article">
+
+    <p>Never in a million years would I have thought I'd be creating a game, much less writing a dev log about it. But honestly, I think this has been a long time coming. I've loved video games since the NES days. I remember spending hours lost in Final Fantasy I, just soaking in the world that had been built. Fast forward to high school, where one of my closest friends and I used to joke about starting our own game company "when we grow up." It was a fun idea, but we didn't exactly have the means (or the education yet) to make it happen. Many years later in college, I came across Disgaea and my mind was completely blown. Here was a game that celebrated the "numbers go up" philosophy and never once took itself too seriously. I've been quietly wanting to make something that mixed those two worlds ever since, but life had other plans.</p>
+
+    <p>Fast forward to today: the idea is still there (along with a few others), and I've finally decided to just give game development a try. So here we are!</p>
+
+    <div class="section-heading">So What's the Game?</div>
+
+    <p>It's a <strong>high fantasy idle RPG</strong>. You pick a class, your hero goes out and fights enemies automatically, earns XP and loot, and gets stronger over time. All combat is fully idle with no clicking required once you've made your setup decisions. The game runs whether you're watching or not. When you do pop back in, you can return to town, fix the place up, do some crafting, and head back out.</p>
+
+    <p>The design philosophy I keep coming back to is: <strong>never punish absence</strong>. This should feel like a companion game, something running on a second monitor while you work or watch something else. If you step away for an extended period, coming back should feel like a reward, not a pile of things you missed. Progress always accumulates and there's no wrong path. The game should continuously push you forward.</p>
+
+    <p>One thing that sets this apart from a typical idle game: there's a full story here, with a beginning, a middle, and an end. I expect there to be some kind of rebirth system (still working through the details on that one), but the experience will be a little different from a true incremental game.</p>
+
+    <div class="pull-quote">
+      "This game is going to bend some genres and be a love letter to gaming in the 80s and 90s."
+    </div>
+
+    <div class="section-heading">The Four Classes</div>
+
+    <p>There are four base classes and you can switch between them freely. Each one has its own level track and its own combat identity. I want switching class to feel like more than just a stat swap. More on how deep that goes in a future log, but here's the short version:</p>
+
+    <div class="class-grid">
+      <div class="class-card warrior">
+        <div class="class-name">⚔ Warrior</div>
+        <div class="class-desc">High damage, high HP. Lands critical hits and staggers enemies, interrupting their attacks mid-swing.</div>
+        <div class="class-trait">Trait: Battle-Hardened</div>
+      </div>
+      <div class="class-card priest">
+        <div class="class-name">✦ Priest</div>
+        <div class="class-desc">Sustain-focused. Each ability runs its own pulse timer, layered rhythms that keep the hero alive through attrition.</div>
+        <div class="class-trait">Trait: Congregation</div>
+      </div>
+      <div class="class-card mage">
+        <div class="class-name">✧ Mage</div>
+        <div class="class-desc">High burst, lower HP. Hits chain into magic sequences that apply debuffs the deeper they go. Volatile but powerful.</div>
+        <div class="class-trait">Trait: Glass Cannon</div>
+      </div>
+      <div class="class-card thief">
+        <div class="class-name">◈ Thief</div>
+        <div class="class-desc">Fast and evasive. Dodges attacks entirely and punishes enemies with immediate counter strikes.</div>
+        <div class="class-trait">Trait: Read the Room</div>
+      </div>
+    </div>
+
+    <div class="section-heading">A Quick Word on How I'm Using AI</div>
+
+    <p>I want to be upfront about this game from the start. I'm using Claude to help me organize ideas, stress-test design decisions and help me craft messages. I've found Claude is great for catching long-term problems I might not be thinking about when I'm excited about a new sub-system I created. I'm also going to lean on it pretty heavily for coding. I can write simple programs but nothing on this scale, so AI will help me build systems I can actually understand and tweak as necessary.</p>
+
+    <p>What I will not be using AI for is creativity. The core of this game comes from my own ideas, and I'll be partnering with artists and composers to bring the art and music to life. I truly believe AI is a powerful tool, but it can never replace human creativity.</p>
+
+    <div class="callout">
+      <div class="callout-label">✦ My Goals for This Project</div>
+      <p>1. Create an interesting idle game with my own ideas that keeps you coming back.<br>
+      2. Deepen my understanding of AI and how it can enhance human-driven ideas.<br>
+      3. Keep me out of trouble.</p>
+    </div>
+
+    <div class="section-heading">Where Things Stand</div>
+
+    <p>Right now I'm deep in the design phase. I have a full Game Design Document that I've been building out: class systems, combat mechanics, the town and building system, economy, progression. The bones are solid. There's still a lot to figure out (enemy areas, the full item system, ability lists per class) but the design is coming together in a way I'm actually excited about.</p>
+
+    <p>I'll be honest, I have no timeline. This is a solo project built around a day job, and I'm not going to make promises I can't keep. But I'll keep writing these logs as things develop. Next one I'll get into the game itself in more detail: why I think you should play it, and what makes it different from the other idle games out there.</p>
+
+    <p>Thanks for reading. More soon!</p>
+
+    <!-- Sign-off -->
+    <div class="sign-off">
+      <div class="sign-off-avatar">V</div>
+      <div>
+        <div class="sign-off-name">Vaehan</div>
+        <div class="sign-off-role">Solo Developer · Absolutely Not a Game Designer · Day Job Haver</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Vaehan's Fantasy Idle RPG &nbsp;·&nbsp; Dev Log #001 &nbsp;·&nbsp; March 2026</p>
+    <p style="margin-top:8px; opacity:0.5;">All systems subject to change. That's the design phase for you.</p>
+  </div>
+
+</div>
+</body>
+</html>
