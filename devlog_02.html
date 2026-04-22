@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Log #2 — The Sealed Door: Idle Chronicles</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0d0f14;
+    --bg2:       #13161e;
+    --bg3:       #1a1e29;
+    --border:    #2a2f42;
+    --gold:      #c9a84c;
+    --gold-dim:  #8a6e2f;
+    --gold-glow: #f0c96a;
+    --text:      #d4cfc4;
+    --text-dim:  #7a7568;
+    --accent:    #5b7fa6;
+    --accent2:   #7a5b9e;
+    --red:       #9e3a3a;
+    --green:     #3a7a5b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* ── Stars background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 34% 7%,  rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 58% 23%, rgba(255,255,255,0.3)  0%, transparent 100%),
+      radial-gradient(1px 1px at 77% 11%, rgba(255,255,255,0.2)  0%, transparent 100%),
+      radial-gradient(1px 1px at 91% 38%, rgba(255,255,255,0.28) 0%, transparent 100%),
+      radial-gradient(1px 1px at 6%  55%, rgba(255,255,255,0.18) 0%, transparent 100%),
+      radial-gradient(1px 1px at 83% 62%, rgba(255,255,255,0.22) 0%, transparent 100%),
+      radial-gradient(1px 1px at 47% 79%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 88%, rgba(255,255,255,0.2)  0%, transparent 100%),
+      radial-gradient(1px 1px at 66% 91%, rgba(255,255,255,0.18) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Page wrapper ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 60px 32px 100px;
+  }
+
+  /* ── Header / masthead ── */
+  .masthead {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .masthead-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 16px;
+  }
+
+  .masthead-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 4vw, 34px);
+    font-weight: 700;
+    color: var(--gold-glow);
+    text-shadow: 0 0 32px rgba(201,168,76,0.35), 0 0 8px rgba(201,168,76,0.2);
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .masthead-sub {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(13px, 2vw, 16px);
+    font-weight: 400;
+    color: var(--gold-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .masthead-divider {
+    margin: 24px auto 0;
+    width: 160px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+
+  /* ── Meta bar ── */
+  .meta-bar {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 48px;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+
+  .meta-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 2px;
+    background: var(--bg2);
+  }
+
+  .meta-tag.gold { color: var(--gold-dim); border-color: var(--gold-dim); }
+
+  /* ── Article body ── */
+  .article {
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .article p {
+    margin-bottom: 1.5em;
+    color: var(--text);
+  }
+
+  .article p:first-child::first-letter {
+    font-family: 'Cinzel', serif;
+    font-size: 3.2em;
+    font-weight: 700;
+    color: var(--gold);
+    float: left;
+    line-height: 0.85;
+    margin: 4px 10px 0 0;
+    text-shadow: 0 0 20px rgba(201,168,76,0.4);
+  }
+
+  /* ── Section headings ── */
+  .section-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 48px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ── Iteration diagram ── */
+  .iteration-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 32px 0;
+    flex-wrap: wrap;
+  }
+
+  .iter-step {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 18px;
+    text-align: center;
+    flex: 1;
+    min-width: 130px;
+    max-width: 180px;
+  }
+
+  .iter-step.struck {
+    opacity: 0.45;
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+  }
+
+  .iter-step.current {
+    border-color: var(--gold-dim);
+    background: var(--bg3);
+  }
+
+  .iter-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .iter-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--gold-glow);
+    font-weight: 600;
+  }
+
+  .iter-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .iter-arrow {
+    font-size: 18px;
+    color: var(--border);
+    padding: 0 8px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    .iter-arrow { display: none; }
+    .iteration-flow { gap: 10px; }
+  }
+
+  /* ── Pull quote ── */
+  .pull-quote {
+    margin: 36px 0;
+    padding: 24px 28px;
+    border-left: 3px solid var(--gold-dim);
+    background: var(--bg2);
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gold-glow);
+    line-height: 1.6;
+  }
+
+  /* ── Callout box ── */
+  .callout {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin: 28px 0;
+  }
+
+  .callout-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 8px;
+  }
+
+  .callout p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+
+  .callout a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(91,127,166,0.4);
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .callout a:hover {
+    color: var(--gold);
+    border-color: var(--gold-dim);
+  }
+
+  /* ── Phase tracker ── */
+  .phase-track {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 24px 0 32px;
+  }
+
+  @media (max-width: 520px) { .phase-track { grid-template-columns: 1fr; } }
+
+  .phase-item {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .phase-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .phase-dot.done    { background: var(--green); box-shadow: 0 0 6px rgba(58,122,91,0.6); }
+  .phase-dot.active  { background: var(--gold); box-shadow: 0 0 6px rgba(201,168,76,0.6); }
+  .phase-dot.pending { background: var(--border); }
+
+  .phase-text {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.4;
+  }
+
+  .phase-text strong { color: var(--text); font-weight: 500; }
+
+  /* ── Sign-off ── */
+  .sign-off {
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .sign-off-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .sign-off-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+  }
+
+  .sign-off-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-top: 3px;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Inline highlight ── */
+  em.highlight {
+    font-style: normal;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 0.95em;
+  }
+
+  strong { color: var(--gold-glow); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="masthead-eyebrow">Dev Log · Issue 002</div>
+    <div class="masthead-title">The Joy of Drawing Outside the Lines</div>
+    <div class="masthead-sub">The Sealed Door: Idle Chronicles · Design Journal</div>
+    <div class="masthead-divider"></div>
+  </div>
+
+  <!-- Meta bar -->
+  <div class="meta-bar">
+    <span class="meta-tag gold">April 2026</span>
+    <span class="meta-tag">Godot 4</span>
+    <span class="meta-tag">Design → Balance</span>
+    <span class="meta-tag">Solo Dev</span>
+  </div>
+
+  <!-- Article -->
+  <div class="article">
+
+    <p>Things have been going well. Genuinely, quietly well. There's something almost meditative about sitting down at the end of the day and just <strong>creating</strong>. No meetings. No tickets. No one to tell me the feature is out of scope. When making a game was just a half-formed daydream, I used to catch myself thinking "wouldn't it be cool if...?" and then letting it go. Now I get to find out.</p>
+
+    <p>Being the sole owner of a project is strange and wonderful. Every decision is mine. Every terrible idea is also mine, which is a humbling check on the whole thing. But the freedom to chase a thought all the way to its conclusion, or its dead end, is something I didn't expect to love as much as I do.</p>
+
+    <div class="section-heading">An Idea, Iterated</div>
+
+    <p>Let me walk you through a design loop that I think captures what this phase has felt like. Early on, I knew I wanted a strong equipment system. My love for the Diablo series runs deep. That itch of watching loot drop and wondering <em>is this the one?</em> is something I want players to feel here too. So I started writing out all the different loot tiers and rarity classes.</p>
+
+    <p>Then a thought arrived, as thoughts do: <em>wouldn't it be cool if you could level up your equipment, like in Disgaea?</em> And of course it would be cool. So I went deeper. Every single piece of equipment would have its own level track. You'd invest in it, watch it grow.</p>
+
+    <div class="iteration-flow">
+      <div class="iter-step struck">
+        <div class="iter-label">Draft 1</div>
+        <div class="iter-name">Level Everything</div>
+        <div class="iter-desc">Every piece of gear gains XP from combat</div>
+      </div>
+      <div class="iter-arrow">→</div>
+      <div class="iter-step current">
+        <div class="iter-label">Final Design</div>
+        <div class="iter-name">Essence Investment</div>
+        <div class="iter-desc">Player-driven leveling for Rare gear and above only</div>
+      </div>
+    </div>
+
+    <p>But as I was writing it, a feeling crept in. Who actually wants to level a Common piece of equipment? You find it at level 5, maybe it carries you for a day, and then a Rare drops and it's obsolete. Putting real investment into something designed to be replaced felt like a slog, both for the player and for me trying to make it meaningful. Back to the drawing board.</p>
+
+    <div class="pull-quote">
+      "Throwing something out is the design process working exactly as intended."
+    </div>
+
+    <p>The answer that stuck was to tie equipment leveling to the rarity gates. Common and Uncommon gear is disposable by design. It drops, does its job, and gets salvaged. Rare, Epic, and Legendary pieces are worth investing in. You spend <strong>Essence</strong> (a universal resource earned by salvaging the things you don't keep) to push them from +0 all the way to +10, each step increasing their stats and adding a visible glow to their name.</p>
+
+    <p>Will that turn out to be the right call? Genuinely no idea. That's what the balance phase is for. But it <em>feels</em> right, and at this stage, feeling right is enough to keep moving.</p>
+
+    <div class="section-heading">Almost Out of the Design Phase</div>
+
+    <p>Speaking of balance, I'm close to starting the balance phase. The bones of the game are solid. Class system, combat, equipment, the town and its buildings, quest and discovery layers, the economy. All of it is documented. What remains now is flesh: numbers, tuning, the spreadsheets that will tell me whether any of this actually works at scale.</p>
+
+    <p>I'll be honest: I am a little bit of a spreadsheet nerd. There is genuine joy for me in building a stat scaling table and watching a curve behave itself. Or misbehave. Both are informative.</p>
+
+    <div class="phase-track">
+      <div class="phase-item">
+        <div class="phase-dot done"></div>
+        <div class="phase-text"><strong>Core Design</strong> · Classes, combat, equipment, economy, systems</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot done"></div>
+        <div class="phase-text"><strong>GDD Foundation</strong> · Save architecture, project structure</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot active"></div>
+        <div class="phase-text"><strong>Balance Phase</strong> · Stat spreadsheets, tuning curves, economy friction</div>
+      </div>
+      <div class="phase-item">
+        <div class="phase-dot pending"></div>
+        <div class="phase-text"><strong>Build Phase</strong> · Combat loop, enemy system, full UI</div>
+      </div>
+    </div>
+
+    <p>I've been reading up on idle game balancing specifically. There's a lot of conventional wisdom out there: exponential curves, softcap patterns, the usual frameworks. I'll probably follow most of it, up to the point where following it stops being fun. My guiding principle for this phase is simple: tune it to make it <em>fun</em>. If that means breaking the rules, so be it. I'd rather ship something that feels good and doesn't match the textbook than something theoretically correct that nobody wants to play.</p>
+
+    <div class="callout">
+      <div class="callout-label">✦ Recommended Reading</div>
+      <p>If you're designing an idle game and haven't read the Kongregate idle balancing essays, do yourself a favour:
+      <br><br>
+      <a href="https://blog.kongregate.com/the-math-of-idle-games-part-i/" target="_blank" rel="noopener">The Math of Idle Games, Part I</a><br>
+      <a href="https://blog.kongregate.com/the-math-of-idle-games-part-ii/" target="_blank" rel="noopener">The Math of Idle Games, Part II</a><br>
+      <a href="https://blog.kongregate.com/the-math-of-idle-games-part-iii/" target="_blank" rel="noopener">The Math of Idle Games, Part III</a><br>
+      <br>
+      Dense, but worth it. The framework for thinking about prestige loops and exponential scaling alone is worth the read.</p>
+    </div>
+
+    <p>More soon. Next log I'm hoping to have something actually <em>running</em> to write about.</p>
+
+    <!-- Sign-off -->
+    <div class="sign-off">
+      <div class="sign-off-avatar">V</div>
+      <div>
+        <div class="sign-off-name">Vaehan</div>
+        <div class="sign-off-role">Solo Developer · Spreadsheet Enthusiast · Rules Optional</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>The Sealed Door: Idle Chronicles &nbsp;·&nbsp; Dev Log #002 &nbsp;·&nbsp; April 2026</p>
+    <p style="margin-top:8px; opacity:0.5;">Design is done when it feels right. Balance is done when the numbers agree.</p>
+  </div>
+
+</div>
+</body>
+</html>
