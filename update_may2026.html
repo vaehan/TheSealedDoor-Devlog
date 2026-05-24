@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>May Update — The Sealed Door: Idle Chronicles</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0d0f14;
+    --bg2:       #13161e;
+    --bg3:       #1a1e29;
+    --border:    #2a2f42;
+    --gold:      #c9a84c;
+    --gold-dim:  #8a6e2f;
+    --gold-glow: #f0c96a;
+    --text:      #d4cfc4;
+    --text-dim:  #7a7568;
+    --accent:    #5b7fa6;
+    --accent2:   #7a5b9e;
+    --red:       #9e3a3a;
+    --green:     #3a7a5b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* ── Stars background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 34% 7%,  rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 58% 23%, rgba(255,255,255,0.3)  0%, transparent 100%),
+      radial-gradient(1px 1px at 77% 11%, rgba(255,255,255,0.2)  0%, transparent 100%),
+      radial-gradient(1px 1px at 91% 38%, rgba(255,255,255,0.28) 0%, transparent 100%),
+      radial-gradient(1px 1px at 6%  55%, rgba(255,255,255,0.18) 0%, transparent 100%),
+      radial-gradient(1px 1px at 83% 62%, rgba(255,255,255,0.22) 0%, transparent 100%),
+      radial-gradient(1px 1px at 47% 79%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 22% 88%, rgba(255,255,255,0.2)  0%, transparent 100%),
+      radial-gradient(1px 1px at 66% 91%, rgba(255,255,255,0.18) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Page wrapper ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 60px 32px 100px;
+  }
+
+  /* ── Header / masthead ── */
+  .masthead {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeDown 0.7s ease both;
+  }
+
+  .masthead-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 16px;
+  }
+
+  .masthead-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 4vw, 34px);
+    font-weight: 700;
+    color: var(--gold-glow);
+    text-shadow: 0 0 32px rgba(201,168,76,0.35), 0 0 8px rgba(201,168,76,0.2);
+    letter-spacing: 0.04em;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .masthead-sub {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(13px, 2vw, 16px);
+    font-weight: 400;
+    color: var(--gold-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .masthead-divider {
+    margin: 24px auto 0;
+    width: 160px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  }
+
+  /* ── Meta bar ── */
+  .meta-bar {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 48px;
+    animation: fadeDown 0.7s 0.1s ease both;
+  }
+
+  .meta-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 2px;
+    background: var(--bg2);
+  }
+
+  .meta-tag.gold { color: var(--gold-dim); border-color: var(--gold-dim); }
+
+  /* ── Article body ── */
+  .article {
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .article p {
+    margin-bottom: 1.5em;
+    color: var(--text);
+  }
+
+  .article p:first-child::first-letter {
+    font-family: 'Cinzel', serif;
+    font-size: 3.2em;
+    font-weight: 700;
+    color: var(--gold);
+    float: left;
+    line-height: 0.85;
+    margin: 4px 10px 0 0;
+    text-shadow: 0 0 20px rgba(201,168,76,0.4);
+  }
+
+  /* ── Section headings ── */
+  .section-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 48px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ── Pull quote ── */
+  .pull-quote {
+    margin: 36px 0;
+    padding: 24px 28px;
+    border-left: 3px solid var(--gold-dim);
+    background: var(--bg2);
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--gold-glow);
+    line-height: 1.6;
+  }
+
+  /* ── Sign-off ── */
+  .sign-off {
+    margin-top: 60px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .sign-off-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--gold-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .sign-off-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+  }
+
+  .sign-off-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-top: 3px;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  strong { color: var(--gold-glow); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Masthead -->
+  <div class="masthead">
+    <div class="masthead-eyebrow">Update · May 2026</div>
+    <div class="masthead-title">A Brief Detour Through Hell</div>
+    <div class="masthead-sub">The Sealed Door: Idle Chronicles · Progress Update</div>
+    <div class="masthead-divider"></div>
+  </div>
+
+  <!-- Meta bar -->
+  <div class="meta-bar">
+    <span class="meta-tag gold">May 2026</span>
+    <span class="meta-tag">Godot 4</span>
+    <a class="meta-tag" href="https://www.youtube.com/watch?v=Y6ljFaKRTrI" target="_blank" rel="noopener" style="text-decoration:none;">Still Alive</a>
+    <span class="meta-tag">Solo Dev</span>
+  </div>
+
+  <!-- Article -->
+  <div class="article">
+
+    <p>Apologies for the quiet month. Diablo IV released its second DLC at the end of April, and I have been conducting um... thorough market research. I have logged many hours in service of understanding the "competition" and I regret nothing.</p>
+
+    <p>Okay, I regret a little. The project did not move much in May. But I'm back now, and if anything I'm more motivated than before.</p>
+
+    <div class="section-heading">What the "Research" Turned Up</div>
+
+    <p>One of the things that genuinely impressed me about Lord of Hatred was how Blizzard handled the endgame progression. I hadn't seriously played a season since Vessel of Hatred, and the amount that has changed in that time caught me off guard. The endgame now has clear tracks, structured paths for building out your character that give you something to focus on without making the whole thing feel overwhelming.</p>
+
+    <p>The endgame structure gave me some ideas. The systems in this game are very different but I want to make sure I give the players something to work toward and make sure they know what it is.</p>
+
+    <p>The story was also pretty good. Nothing groundbreaking, but it moved along and was entertaining to the end. I think as long as I tell an interesting story that doesn't get in the way of the gameplay I will have done my job!</p>
+
+    <div class="section-heading">Back to Designing</div>
+
+    <p>This is just a quick note, no major changes or announcements, just wanted to keep everyone informed that I'm still working on the game!</p>
+
+    <p>Next time, I'll get into the games that inspired me (you'll never guess what game is on that list).</p>
+
+    <!-- Sign-off -->
+    <div class="sign-off">
+      <div class="sign-off-avatar">V</div>
+      <div>
+        <div class="sign-off-name">Vaehan</div>
+        <div class="sign-off-role">Solo Developer · Market Researcher · Back at the Desk</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>The Sealed Door: Idle Chronicles &nbsp;·&nbsp; Progress Update &nbsp;·&nbsp; May 2026</p>
+    <p style="margin-top:8px; opacity:0.5;">The project survived. So did the Wanderer, eventually.</p>
+  </div>
+
+</div>
+</body>
+</html>
